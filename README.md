@@ -98,7 +98,7 @@ flowchart TB
       direction TB
       subgraph C["<b>Mensaje ICMP Echo Request: 40 bytes</b><br/>Encabezado: 8 bytes; tipo 8, código 0"]
         direction TB
-        P["<b>Payload de ping: 32 bytes</b><br/>abcdefghijklmnopqrstuvwabcdefghi"]
+        P["&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Payload de ping: 32 bytes</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>Datos: abcdefghijklmnopqrstuvwabcdefghi (letras del abecedario)"]
       end
     end
   end
@@ -108,4 +108,6 @@ flowchart TB
   style C fill:#FFEEDD,stroke:#B05A00,stroke-width:2px,color:#000
   style P fill:#FFFFFF,stroke:#999999,stroke-width:2px,color:#000
 ```
-Verificación: 14 + 20 + 8 + 32 = 74 bytes.
+
+Verificación: 14 (Ethernet) + 20 (cabecera IPv4) + 8 (cabecera ICMP) + 32 (payload) = 74 bytes.
+```
