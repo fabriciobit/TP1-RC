@@ -24,13 +24,21 @@ Obtenida con `ipconfig /all`:
 
 
 
+<img width="663" height="568" alt="image" src="https://github.com/user-attachments/assets/21f905b6-d0e7-4221-9054-b9855809ebf8" />
+
+
+
+
+
 <img width="1568" height="638" alt="image" src="https://github.com/user-attachments/assets/bd270725-7994-4994-957a-708d776dfdb7" />
 
 
 
-<img width="663" height="568" alt="image" src="https://github.com/user-attachments/assets/21f905b6-d0e7-4221-9054-b9855809ebf8" />
-
 ### Tabla de capas (Echo Request a 8.8.8.8, frame 14509)
+
+
+<img width="1908" height="987" alt="image" src="https://github.com/user-attachments/assets/cdd5838c-6079-413f-a178-98079e1c3202" />
+
 
 | Capa (Wireshark) | Origen | Destino | Campo que indica el protocolo de adentro |
 |---|---|---|---|
