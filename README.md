@@ -92,20 +92,20 @@ No son iguales porque cada emisor arranca con su propio TTL inicial y cada route
 
 ```mermaid
 flowchart TB
-  subgraph F["Frame: 74 bytes"]
-    subgraph E["Ethernet II: 14 bytes"]
-      E1["Dst b8:9f:cc:c1:4c:50 | Src 84:5c:f3:5a:1d:79 | Type 0x0800"]
-    end
-    subgraph I["IPv4: 60 bytes (cabecera 20)"]
-      I1["192.168.1.20 → 8.8.8.8 | TTL 128 | Protocol 1"]
-      subgraph C["ICMP: 40 bytes (cabecera 8)"]
-        C1["Type 8 | Code 0 | ID 1 | Seq 945"]
-        subgraph D["Data: 32 bytes"]
-          D1["abcdefghijklmnopqrstuvwabcdefghi"]
-        end
+  subgraph E["<b>Ethernet II: 74 bytes capturados</b><br/>Encabezado: 14 bytes; Type = 0x0800"]
+    direction TB
+    subgraph I["<b>Datagrama IPv4: 60 bytes</b><br/>Encabezado: 20 bytes; Protocol = 1 (ICMP)"]
+      direction TB
+      subgraph C["<b>Mensaje ICMP Echo Request: 40 bytes</b><br/>Encabezado: 8 bytes; tipo 8, código 0"]
+        direction TB
+        P["<b>Payload de ping: 32 bytes</b><br/>abcdefghijklmnopqrstuvwabcdefghi"]
       end
     end
   end
-```
 
+  style E fill:#EBEBFF,stroke:#1a1aa0,stroke-width:2px,color:#000
+  style I fill:#E3FFE3,stroke:#1a6e1a,stroke-width:2px,color:#000
+  style C fill:#FFEEDD,stroke:#B05A00,stroke-width:2px,color:#000
+  style P fill:#FFFFFF,stroke:#999999,stroke-width:2px,color:#000
+```
 Verificación: 14 + 20 + 8 + 32 = 74 bytes.
