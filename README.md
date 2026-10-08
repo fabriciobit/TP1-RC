@@ -90,23 +90,22 @@ No son iguales porque cada emisor arranca con su propio TTL inicial y cada route
 
 ### e) Encapsulación (Echo Request, frame 14509)
 
-```
-┌─ Frame: 74 bytes ───────────────────────────────────────┐
-│ ┌─ Ethernet II: 14 bytes ──────────────────────────────┐│
-│ │ Dst b8:9f:cc:c1:4c:50 | Src 84:5c:f3:5a:1d:79 | 0800  ││
-│ └──────────────────────────────────────────────────────┘│
-│ ┌─ IPv4: 60 bytes (Total Length) ──────────────────────┐│
-│ │ Cabecera IP: 20 bytes                                ││
-│ │ 192.168.1.20 → 8.8.8.8 | TTL 128 | Protocol 1        ││
-│ │ ┌─ ICMP: 40 bytes ─────────────────────────────────┐ ││
-│ │ │ Cabecera ICMP: 8 bytes                           │ ││
-│ │ │ Type 8 | Code 0 | Checksum | ID 1 | Seq 945      │ ││
-│ │ │ ┌─ Data: 32 bytes ─────────────────────────────┐ │ ││
-│ │ │ │ abcdefghijklmnopqrstuvwabcdefghi             │ │ ││
-│ │ │ └──────────────────────────────────────────────┘ │ ││
-│ │ └──────────────────────────────────────────────────┘ ││
-│ └──────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  subgraph F["Frame: 74 bytes"]
+    subgraph E["Ethernet II: 14 bytes"]
+      E1["Dst b8:9f:cc:c1:4c:50 | Src 84:5c:f3:5a:1d:79 | Type 0x0800"]
+    end
+    subgraph I["IPv4: 60 bytes (cabecera 20)"]
+      I1["192.168.1.20 → 8.8.8.8 | TTL 128 | Protocol 1"]
+      subgraph C["ICMP: 40 bytes (cabecera 8)"]
+        C1["Type 8 | Code 0 | ID 1 | Seq 945"]
+        subgraph D["Data: 32 bytes"]
+          D1["abcdefghijklmnopqrstuvwabcdefghi"]
+        end
+      end
+    end
+  end
 ```
 
 Verificación: 14 + 20 + 8 + 32 = 74 bytes.
