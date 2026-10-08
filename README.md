@@ -61,34 +61,25 @@ La MAC destino del Echo Request a 8.8.8.8 es `b8:9f:cc:c1:4c:50`, que **no** es 
 
 
 
-| Capa | Campo | Echo Request (14509) | Echo Reply (14510) | ¿Cambia? |
-|---|---|---|---|---|
-| Ethernet | MAC origen | 84:5c:f3:5a:1d:79 | b8:9f:cc:c1:4c:50 | Sí (se invierte) |
-| Ethernet | MAC destino | b8:9f:cc:c1:4c:50 | 84:5c:f3:5a:1d:79 | Sí (se invierte) |
-| Ethernet | Type | 0x0800 (IPv4) | 0x8100 (802.1Q VLAN) | Sí |
-| Ethernet | Tamaño del frame | 74 bytes | 78 bytes | Sí |
-| IPv4 | IP origen | 192.168.1.20 | 8.8.8.8 | Sí (se invierte) |
-| IPv4 | IP destino | 8.8.8.8 | 192.168.1.20 | Sí (se invierte) |
-| IPv4 | TTL | 128 | 118 | Sí |
-| IPv4 | Identification | 0xa889 | 0x0000 | Sí |
-| IPv4 | Header Checksum | 0x0000 | 0x72f5 | Sí |
-| IPv4 | Versión, Header Length, DSCP, Total Length (60), Flags, Fragment Offset, Protocol (ICMP) | igual | igual | No |
-| ICMP | Type | 8 (Echo request) | 0 (Echo reply) | Sí |
-| ICMP | Checksum | 0x49aa | 0x51aa | Sí |
-| ICMP | Code | 0 | 0 | No |
-| ICMP | Identifier | 1 (0x0001) | 1 (0x0001) | No |
-| ICMP | Sequence Number | 945 (0x03b1) | 945 (0x03b1) | No |
-| ICMP | Data | 32 bytes (`abcdefghijklmnopqrstuvwabcdefghi`) | 32 bytes (idénticos) | No |
+### b) Echo Request (frame 14509) vs. Echo Reply (frame 14510)
+
+Wireshark los vincula con `[Response frame: 14510]` (en el Request) y `[Request frame: 14509]` (en el Reply).
+
+| Capa | Campos que cambian | Campos que se mantienen |
+|---|---|---|
+| Ethernet | MAC origen y destino (se invierten); Type (0x0800 → 0x8100, por el tag 802.1Q del Reply) | Las dos MAC (solo cambian de rol) |
+| IPv4 | IP origen y destino (se invierten); TTL (128 → 118); Identification (0xa889 → 0x0000); Header Checksum (0x0000 → 0x72f5) | Versión, Header Length, DSCP, Total Length (60), Flags, Fragment Offset, Protocol (ICMP) |
+| ICMP | Type (8 → 0); Checksum (0x49aa → 0x51aa) | Code (0), Identifier (1), Sequence Number (945), Data (32 bytes, idénticos) |
 
 **¿Por qué tiene sentido cada cambio?**
 
 - **MAC e IP origen/destino:** se invierten porque el Reply viaja en sentido contrario.
-- **Ethernet Type y tamaño:** el router agregó un encabezado 802.1Q (VLAN ID 0, solo prioridad) al Reply, por eso el Type pasa a 0x8100 y el frame mide 4 bytes más (14 + 4 + 20 + 8 + 32 = 78).
-- **TTL:** cada emisor define el suyo (mi PC con 128) y cada router por el que pasa el paquete le resta 1.
+- **Ethernet Type:** el router agregó un tag 802.1Q (VLAN ID 0, solo prioridad) al Reply; por eso el Type es 0x8100 y el frame mide 78 bytes en vez de 74.
+- **TTL:** cada emisor define el suyo (mi PC arranca con 128) y cada router intermedio le resta 1.
 - **Identification:** es un contador propio de cada emisor, no tiene por qué coincidir.
-- **Header Checksum IP:** en el Request vale 0x0000 porque la placa de red lo calcula al enviar (checksum offloading), después de que Wireshark captura el paquete. En el Reply aparece el valor calculado por quien lo envió.
-- **ICMP Type (8 → 0):** es justamente el campo que distingue un Echo Request de un Echo Reply.
-- **ICMP Checksum:** cambia porque cambió el Type. El checksum cubre todo el mensaje ICMP y la diferencia es exactamente 0x0800 (0x49aa + 0x0800 = 0x51aa).
+- **Header Checksum IP:** en el Request vale 0x0000 porque la placa lo calcula al enviar (checksum offloading); en el Reply aparece el valor calculado por quien lo envió.
+- **ICMP Type:** distingue Request (8) de Reply (0).
+- **ICMP Checksum:** cambia porque cambió el Type (0x49aa + 0x0800 = 0x51aa).
 
 **¿Por qué el Identifier y el Sequence Number se mantienen?**
 
