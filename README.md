@@ -71,19 +71,10 @@ Wireshark los vincula con `[Response frame: 14510]` (en el Request) y `[Request 
 | IPv4 | IP origen y destino (se invierten); TTL (128 → 118); Identification (0xa889 → 0x0000); Header Checksum (0x0000 → 0x72f5) | Versión, Header Length, DSCP, Total Length (60), Flags, Fragment Offset, Protocol (ICMP) |
 | ICMP | Type (8 → 0); Checksum (0x49aa → 0x51aa) | Code (0), Identifier (1), Sequence Number (945), Data (32 bytes, idénticos) |
 
-**¿Por qué tiene sentido cada cambio?**
+- **MAC e IP origen/destino:** se invierten porque el Reply viaja en sentido contrario ; **Ethernet Type:** el router agregó un tag 802.1Q (VLAN ID 0, solo prioridad) al Reply; por eso el Type es 0x8100 y el frame mide 78 bytes en vez de 74 ; **TTL:** cada emisor define el suyo (mi PC arranca con 128) y cada router intermedio le resta 1 ; **Identification:** es un contador propio de cada emisor, no tiene por qué coincidir ; **Header Checksum IP:** en el Request vale 0x0000 porque la placa lo calcula al enviar (checksum offloading); en el Reply aparece el valor calculado por quien lo envió ; **ICMP Type:** distingue Request (8) de Reply (0) ;  **ICMP Checksum:** cambia porque cambió el Type (0x49aa + 0x0800 = 0x51aa).
 
-- **MAC e IP origen/destino:** se invierten porque el Reply viaja en sentido contrario.
-- **Ethernet Type:** el router agregó un tag 802.1Q (VLAN ID 0, solo prioridad) al Reply; por eso el Type es 0x8100 y el frame mide 78 bytes en vez de 74.
-- **TTL:** cada emisor define el suyo (mi PC arranca con 128) y cada router intermedio le resta 1.
-- **Identification:** es un contador propio de cada emisor, no tiene por qué coincidir.
-- **Header Checksum IP:** en el Request vale 0x0000 porque la placa lo calcula al enviar (checksum offloading); en el Reply aparece el valor calculado por quien lo envió.
-- **ICMP Type:** distingue Request (8) de Reply (0).
-- **ICMP Checksum:** cambia porque cambió el Type (0x49aa + 0x0800 = 0x51aa).
-
-**¿Por qué el Identifier y el Sequence Number se mantienen?**
-
-Porque `ping` los usa para asociar cada respuesta con su pedido: el Identifier identifica al proceso `ping` y el Sequence Number a cada pedido dentro de esa ejecución. Por eso el Reply los devuelve sin modificar, igual que el payload (eco).
+El Identifier y el Sequence Number se mantienen porque ping los usa para asociar cada respuesta con su pedido: el Identifier identifica al proceso ping y el Sequence Number a cada pedido dentro de esa ejecución. Por eso el Reply los devuelve sin modificar.
+### c) Payload
 ### c) Payload
 
 El payload está dentro del mensaje ICMP, después de Identifier y Sequence Number (campo "Data" en Wireshark). Tiene 32 bytes y contiene los caracteres `abcdefghijklmnopqrstuvwabcdefghi` (`6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869`). En el Reply es exactamente igual: el Reply devuelve los mismos datos que recibió (eco).
