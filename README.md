@@ -40,12 +40,13 @@ Obtenida con `ipconfig /all`:
 <img width="1908" height="987" alt="image" src="https://github.com/user-attachments/assets/cdd5838c-6079-413f-a178-98079e1c3202" />
 
 
+
 | Capa (Wireshark) | Origen | Destino | Campo que indica el protocolo de adentro |
 |---|---|---|---|
-| Ethernet II | 84:5c:f3:5a:1d:79 (Intel_5a:1d:79) | b8:9f:cc:c1:4c:50 (HuaweiTechno_c1:4c:50) | Type: IPv4 (0x0800) |
-| Internet Protocol Version 4 | 192.168.1.20 | 8.8.8.8 | Protocol: ICMP (1) |
-| Internet Control Message Protocol | No tiene (se identifica con Type 8, Code 0, Identifier 1, Sequence 945) | No tiene | No tiene: lo que sigue son datos |
-| Datos / payload | — | — | — |
+| Ethernet II | 84:5c:f3:5a:1d:79 (Intel_5a:1d:79, mi placa Wi-Fi) | b8:9f:cc:c1:4c:50 (HuaweiTechno_c1:4c:50, mi router/gateway) | **Type: IPv4 (0x0800)** |
+| Internet Protocol Version 4 | 192.168.1.20 | 8.8.8.8 | **Protocol: ICMP (1)** |
+| Internet Control Message Protocol | No tiene direcciones propias: viaja entre las IP del encabezado IPv4. Se identifica con Type 8 (Echo request), Code 0, Identifier 1 y Sequence 945 | No tiene (ídem) | No tiene campo de protocolo: después del encabezado ICMP (8 bytes) vienen directamente los datos |
+| Datos / payload (Data) | No tiene: son bytes sin encabezado propio, dentro del mensaje ICMP | No tiene | No hay protocolo adentro: son 32 bytes de relleno (`abcdefghijklmnopqrstuvwabcdefghi`) que el Reply devuelve idénticos |
 
 ### a) MAC destino
 
